@@ -21,7 +21,7 @@ LineChart.prototype.initVis = function(){
     .attr('transform', `translate(${vis.margin.left}, ${vis.margin.top})`);
 
   vis.t = function() { return d3.transition().duration(1000); }
-  vis.bisectDate = d3.bisector(function(d){ return d.date; }).left;
+  vis.bisectDate = d3.bisector( d => { return d.date; }).left;
 
   vis.linePath = vis.g.append('path')
     .attr('class', 'line')
@@ -57,7 +57,7 @@ LineChart.prototype.wrangleData = function(){
   vis.yVariable = $('#var-select').val()
 
   vis.sliderValues = $('#date-slider').slider('values');
-  vis.dataFiltered = filteredData[vis.coin].filter(function(d){
+  vis.dataFiltered = filteredData[vis.coin].filter( d => {
     return ((d.date >= vis.sliderValues[0]) && (d.date <= vis.sliderValues[1]))
   })
 
@@ -68,9 +68,9 @@ LineChart.prototype.updateVis = function(){
   var vis = this;
 
   // UPDATE SCALES
-  vis.x.domain(d3.extent(vis.dataFiltered, function(d){ return d.date; }));
-  vis.y.domain([d3.min(vis.dataFiltered, function(d) { return d[vis.yVariable]; }) / 1.005,
-                d3.max(vis.dataFiltered, function(d) { return d[vis.yVariable]; }) * 1.005]);
+  vis.x.domain(d3.extent(vis.dataFiltered, d => { return d.date; }));
+  vis.y.domain([d3.min(vis.dataFiltered, d => { return d[vis.yVariable]; }) / 1.005,
+                d3.max(vis.dataFiltered, d => { return d[vis.yVariable]; }) * 1.005]);
 
   // FIX Y AXIS FORMAT VALUES
   var formatSi = d3.format('.2s');
@@ -137,8 +137,8 @@ LineChart.prototype.updateVis = function(){
   }
 
   var line = d3.line()
-    .x(function(d) { return vis.x(d.date); })
-    .y(function(d) { return vis.y(d[vis.yVariable]); });
+    .x( d => { return vis.x(d.date); })
+    .y( d => { return vis.y(d[vis.yVariable]); });
 
   vis.g.select('.line')
     .transition(vis.t)
