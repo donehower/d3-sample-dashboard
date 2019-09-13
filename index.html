@@ -23,45 +23,50 @@
 
     <!-- GRID SETUP -->
     <div class="container">
-      <!-- first of two rows -->
-      <div id="selections" class="row">
-        <!-- date slider -->
-        <div class="col-md-4">
-          <div id="slider-div">
-            <label>Date: <span id="dateLabel1">12/05/2013</span> - <span id="dateLabel2">31/10/2017</span></label>
-            <div id="date-slider"></div>
-          </div>
-        </div>
-        <!-- coin dropdown -->
-        <!-- <div class="col-md-4">
-          <select class="form-control" id="coin-select">
-            <option selected value="bitcoin">Bitcoin</option>
-            <option value="ethereum">Ethereum</option>
-            <option value="bitcoin_cash">Bitcoin Cash</option>
-            <option value="litecoin">Litecoin</option>
-            <option value="ripple">Ripple</option>
-          </select>
-        </div> -->
-        <!-- metric dropdown -->
-        <div class="col-md-4">
-          <select class="form-control" id="var-select">
-            <option selected value="price_usd">Price in Dollars</option>
-            <option value="market_cap">Market Capitalization</option>
-            <option value="24h_vol">24 hour Trading Volume</option>
-          </select>
-        </div>
-      </div>
-
-      <!-- second of two rows -->
       <div class="row">
-        <!-- chart area -->
-        <div class="col-md-4" id="chart-area1"></div>
-        <div class="col-md-4" id="chart-area2"></div>
-        <div class="col-md-4" id="chart-area3"></div>
-        <div class="col-md-4" id="chart-area4"></div>
-        <div class="col-md-4" id="chart-area5"></div>
-      </div>
+        <div class="col-md-12">
 
+      <!-- FIRST OF TWO ROWS -->
+          <div id="selections" class="row">
+            <!-- date slider -->
+            <div class="col-md-4">
+              <div id="slider-div">
+                <label>Date: <span id="dateLabel1">12/05/2013</span> - <span id="dateLabel2">31/10/2017</span></label>
+                <div id="date-slider"></div>
+              </div>
+            </div>
+            <!-- coin dropdown -->
+            <div class="col-md-4">
+              <select class="form-control" id="coin-select">
+                <option selected value="bitcoin">Bitcoin</option>
+                <option value="ethereum">Ethereum</option>
+                <option value="bitcoin_cash">Bitcoin Cash</option>
+                <option value="litecoin">Litecoin</option>
+                <option value="ripple">Ripple</option>
+              </select>
+            </div>
+            <!-- metric dropdown -->
+            <div class="col-md-4">
+              <select class="form-control" id="var-select">
+                <option selected value="price_usd">Price in Dollars</option>
+                <option value="market_cap">Market Capitalization</option>
+                <option value="24h_vol">24 hour Trading Volume</option>
+              </select>
+            </div>
+          </div>
+      <!-- SECOND OF TWO ROWS -->
+          <div class="row">
+            <!-- line chart areat -->
+            <div id="line-area" class="col-md-8"></div>
+            <!-- donut chart area -->
+            <div class="col-md-4">
+              <div id="donut-area1"></div>
+              <div id="donut-area2"></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
     </div>
 
   <!-- external js libraries -->
@@ -72,6 +77,7 @@
 
   <!-- custom js -->
   <script src="js/lineChart.js"></script>
+  <script src="js/donutChart.js"></script>
   <script src="js/main.js"></script>
   </body>
 </html>
