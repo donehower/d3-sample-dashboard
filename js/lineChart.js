@@ -1,6 +1,5 @@
-LineChart = function(_parentElement, _coin) {
+LineChart = function(_parentElement) {
   this.parentElement = _parentElement;
-  this.coin = _coin;
 
   this.initVis();
 };
@@ -8,9 +7,9 @@ LineChart = function(_parentElement, _coin) {
 LineChart.prototype.initVis = function(){
   var vis = this;
 
-  vis.margin = {left:50, right:20, top:50, bottom:100};
-  vis.height = 250 - vis.margin.top - vis.margin.bottom;
-  vis.width = 300 - vis.margin.left - vis.margin.right;
+  vis.margin = {left:80, right:100, top:50, bottom:100};
+  vis.height = 550 - vis.margin.top - vis.margin.bottom;
+  vis.width = 800 - vis.margin.left - vis.margin.right;
 
   vis.svg = d3.select(vis.parentElement)
     .append('svg')
@@ -26,14 +25,16 @@ LineChart.prototype.initVis = function(){
   vis.linePath = vis.g.append('path')
     .attr('class', 'line')
     .attr('fill', 'none')
-    .attr('stroke', 'grey')
     .attr('stroke-width', '3px');
 
-  vis.g.append('text')
-    .attr('x', vis.width/2)
-    .attr('y', 0)
+  vis.yLabel = vis.g.append('text')
+    .attr('class', 'y axisLabel')
+    .attr('transform', 'rotate(-90)')
+    .attr('x', -170)
+    .attr('y', -60)
+    .attr('font-size', '20px')
     .attr('text-anchor', 'middle')
-    .text(vis.coin)
+    .text('Price (USD)')
 
   vis.x = d3.scaleTime().range([0, vis.width]);
   vis.y = d3.scaleLinear().range([vis.height, 0]);
@@ -54,6 +55,7 @@ LineChart.prototype.initVis = function(){
 LineChart.prototype.wrangleData = function(){
   var vis = this;
 
+  vis.coin = $('#coin-select').val()
   vis.yVariable = $('#var-select').val()
 
   vis.sliderValues = $('#date-slider').slider('values');
@@ -126,21 +128,28 @@ LineChart.prototype.updateVis = function(){
 
   function mousemove() {
     var x0 = vis.x.invert(d3.mouse(this)[0]),
-            i = vis.bisectDate(vis.dataFiltered, x0, 1),
-            d0 = vis.dataFiltered[i - 1],
-            d1 = vis.dataFiltered[i],
-            d = (d1 && d0) ? (x0 - d0.date > d1.date - x0 ? d1 : d0) : 0;
-        focus.attr("transform", "translate(" + vis.x(d.date) + "," + vis.y(d[vis.yVariable]) + ")");
-        focus.select("text").text(function() { return d3.format("$,")(d[vis.yVariable].toFixed(2)); });
-        focus.select(".x-hover-line").attr("y2", vis.height - vis.y(d[vis.yVariable]));
-        focus.select(".y-hover-line").attr("x2", -vis.x(d.date));
+        i = vis.bisectDate(vis.dataFiltered, x0, 1),
+        d0 = vis.dataFiltered[i - 1],
+        d1 = vis.dataFiltered[i],
+        d = (d1 && d0) ? (x0 - d0.date > d1.date - x0 ? d1 : d0) : 0;
+    focus.attr('transform', `translate(${vis.x(d.date)}, ${vis.y(d[vis.yVariable])})`);
+    // focus.attr("transform", "translate(" + vis.x(d.date) + "," + vis.y(d[vis.yVariable]) + ")");
+    focus.select("text").text(function() { return d3.format("$,")(d[vis.yVariable].toFixed(2)); });
+    focus.select(".x-hover-line").attr("y2", vis.height - vis.y(d[vis.yVariable]));
+    focus.select(".y-hover-line").attr("x2", -vis.x(d.date));
   }
+
+  var newLabel = (vis.yVariable == 'price_usd') ? 'Price (USD)' :
+                 ((vis.yVariable == "market_cap") ? "Market Capitalization (USD)" :
+                 "24 Hour Trading Volume (USD)")
+  vis.yLabel.text(newLabel)
 
   var line = d3.line()
     .x( d => { return vis.x(d.date); })
     .y( d => { return vis.y(d[vis.yVariable]); });
 
   vis.g.select('.line')
+    .attr('stroke', color(vis.coin))
     .transition(vis.t)
     .attr('d', line(vis.dataFiltered));
 };
