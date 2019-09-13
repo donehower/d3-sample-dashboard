@@ -1,14 +1,14 @@
-var filteredData;
-var lineChart1,
-    lineChart2,
-    lineChart3,
-    lineChart4,
-    lineChart5;
+var lineChart,
+    donutChart1,
+    donutChart2
+var filteredData = {},
+    donutData = []
 var parseTime = d3.timeParse("%d/%m/%Y");
 var formatTime = d3.timeFormat("%d/%m/%Y");
+var color = d3.scaleOrdinal(d3.schemeCategory10);
 
-$('#coin-select').on('change', updateCharts)
-$('#var-select').on('change', updateCharts)
+$('#coin-select').on('change', function(){ coinChanged(); })
+$('#var-select').on('change', function() { lineChart.wrangleData(); })
 
 $('#date-slider').slider({
   range: true,
@@ -18,10 +18,21 @@ $('#date-slider').slider({
   values: [parseTime("12/5/2013").getTime(), parseTime("31/10/2017").getTime()],
   slide: function(event, ui){
     $("#dateLabel1").text(formatTime(new Date(ui.values[0])));
-        $("#dateLabel2").text(formatTime(new Date(ui.values[1])));
-        updateCharts();
+    $("#dateLabel2").text(formatTime(new Date(ui.values[1])));
+    lineChart.wrangleData();
   }
 });
+
+function arcClicked(arc){
+    $("#coin-select").val(arc.data.coin);
+    coinChanged();
+}
+
+function coinChanged(){
+    donutChart1.wrangleData();
+    donutChart2.wrangleData();
+    lineChart.wrangleData();
+}
 
 d3.json('data/coins.json').then(function(data){
   filteredData = {};
@@ -38,19 +49,18 @@ d3.json('data/coins.json').then(function(data){
       d['market_cap'] = +d['market_cap'];
       d['date'] = parseTime(d['date']);
     });
+    donutData.push({
+      'coin': coin,
+      'data': filteredData[coin].slice(-1)[0]
+    })
   }
 
-  lineChart1 = new LineChart('#chart-area1', 'bitcoin');
-  lineChart2 = new LineChart('#chart-area2', 'ethereum');
-  lineChart3 = new LineChart('#chart-area3', 'bitcoin_cash');
-  lineChart4 = new LineChart('#chart-area4', 'litecoin');
-  lineChart5 = new LineChart('#chart-area5', 'ripple');
+  lineChart = new LineChart('#line-area');
+  donutChart1 = new DonutChart('#donut-area1', '24h_vol');
+  donutChart2 = new DonutChart('#donut-area2', 'market_cap');
+
 })
 
 function updateCharts(){
-  lineChart1.wrangleData()
-  lineChart2.wrangleData()
-  lineChart3.wrangleData()
-  lineChart4.wrangleData()
-  lineChart5.wrangleData()
+  lineChart.wrangleData()
 }
